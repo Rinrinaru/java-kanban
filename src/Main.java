@@ -1,6 +1,14 @@
+import tracker.controllers.InMemoryTaskManager;
+import tracker.controllers.TaskManager;
+import tracker.model.Epic;
+import tracker.model.Subtask;
+import tracker.model.Task;
+
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
-        TaskManager manager = new TaskManager();
+        TaskManager manager = new InMemoryTaskManager();
 
         Task task1 = new Task("Электроника", "Отчет по лабе 3");
         Task task2 = new Task("ЧМИ", "Узнать про распределение задач");
@@ -63,5 +71,18 @@ public class Main {
         System.out.println("Подзадача 3: " + subtask3.getStatus());
         System.out.println("Эпик 1: " + epic1.getStatus() + " (должен быть IN_PROGRESS)");
         System.out.println("Эпик 2: " + epic2.getStatus() + " (должен быть DONE)");
+
+        manager.getTask(task1.getId());
+        manager.getEpic(epic1.getId());
+        manager.getSubtask(subtask1.getId());
+        manager.getTask(task2.getId());
+        manager.getTask(task1.getId());
+
+
+        List<Task> history = manager.getHistory();
+        System.out.println("История просмотров:");
+        for (Task task : history) {
+            System.out.println(task.getName() + " (" + task.getClass().getSimpleName() + ")");
+        }
     }
 }

@@ -1,4 +1,6 @@
-public class Subtask extends Task{
+package tracker.model;
+
+public class Subtask extends Task {
     private int epicID;
     public Subtask(String name, String description, int epicID) {
         super(name, description);
