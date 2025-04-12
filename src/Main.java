@@ -1,4 +1,5 @@
 import tracker.controllers.InMemoryTaskManager;
+import tracker.controllers.Managers;
 import tracker.controllers.TaskManager;
 import tracker.model.Epic;
 import tracker.model.Subtask;
@@ -8,7 +9,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        TaskManager manager = new InMemoryTaskManager();
+        TaskManager manager = Managers.getDefault();
 
         Task task1 = new Task("Электроника", "Отчет по лабе 3");
         Task task2 = new Task("ЧМИ", "Узнать про распределение задач");
