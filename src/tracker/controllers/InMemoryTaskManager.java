@@ -128,9 +128,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createSubtask(Subtask subtask) {
-        if (subtask == null) {
-            throw new IllegalArgumentException("Subtask cannot be null");
-        }
+        if (subtask == null) return;
         if (!epics.containsKey(subtask.getEpicId())) {
             throw new IllegalArgumentException("Epic with id " + subtask.getEpicId() + " not found");
         }
