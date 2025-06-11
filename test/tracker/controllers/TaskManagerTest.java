@@ -34,6 +34,13 @@ class TaskManagerTest {
     @Test
     void shouldNotAllowSubtaskWithoutEpic() {
         Subtask subtask = new Subtask("Сабтаск", "", 999);
-        assertThrows(IllegalArgumentException.class, () -> manager.createSubtask(subtask));
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> manager.createSubtask(subtask),
+                "Ожидалось исключение при создании подзадачи без эпика"
+        );
+
+        assertEquals("Epic with id 999 not found", exception.getMessage(),
+                "Неверное сообщение об ошибке");
     }
 }
