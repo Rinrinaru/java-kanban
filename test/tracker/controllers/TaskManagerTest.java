@@ -2,8 +2,6 @@ package tracker.controllers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tracker.controllers.Managers;
-import tracker.controllers.TaskManager;
 import tracker.model.*;
 
 import static org.junit.jupiter.api.Assertions.*;
