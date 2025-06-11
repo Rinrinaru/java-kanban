@@ -1,7 +1,5 @@
 package tracker.model;
 
-import java.util.Objects;
-
 public class Task {
 
     protected int id;
@@ -9,7 +7,7 @@ public class Task {
     protected String description;
     protected Status status;
 
-    public enum Status {NEW, IN_PROGRESS, DONE}
+    public enum Status { NEW, IN_PROGRESS, DONE }
 
     public Task(String name, String description) {
         this.name = name;
