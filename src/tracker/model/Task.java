@@ -9,9 +9,9 @@ public class Task {
     protected String description;
     protected Status status;
 
-    public enum Status {NEW, IN_PROGRESS, DONE}
+    public enum Status { NEW, IN_PROGRESS, DONE }
 
-    public enum Type {TASK, EPIC, SUBTASK}
+    public enum Type { TASK, EPIC, SUBTASK }
 
     public Task(String name, String description) {
         this.name = name;
