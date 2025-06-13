@@ -123,7 +123,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     subtask.setStatus(status);
                     return subtask;
             }
+        } catch (NumberFormatException e) {
+            System.err.println("Ошибка: неверный числовой формат");
+            return null;
+        } catch (IllegalArgumentException e) {
+            System.err.println("Ошибка: неверное значение enum");
+            return null;
         } catch (Exception e) {
+            System.err.println("Неизвестная ошибка при разборе строки" + e.getMessage());
             return null;
         }
         return null;
