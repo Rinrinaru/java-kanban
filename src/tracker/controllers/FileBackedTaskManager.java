@@ -1,5 +1,6 @@
 package tracker.controllers;
 
+import tracker.exceptions.ManagerSaveException;
 import tracker.model.Epic;
 import tracker.model.Subtask;
 import tracker.model.Task;
@@ -46,18 +47,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         case EPIC:
                             epics.put(task.getId(), (Epic) task);
                             break;
-                    }
-                }
-
-                for (int i = 1; i < lines.length; i++) {
-                    Task task = manager.fromString(lines[i]);
-                    if (task != null && task.getType() == Task.Type.SUBTASK) {
-                        Subtask subtask = (Subtask) task;
-                        subtasks.put(subtask.getId(), subtask);
-                        Epic epic = epics.get(subtask.getEpicId());
-                        if (epic != null) {
-                            epic.getSubtaskIds().add(subtask.getId());
-                        }
+                        case SUBTASK:
+                            Subtask subtask = (Subtask) task;
+                            subtasks.put(subtask.getId(), subtask);
+                            Epic epic = epics.get(subtask.getEpicId());
+                            if (epic != null) {
+                                epic.getSubtaskIds().add(subtask.getId());
+                            }
+                            break;
                     }
                 }
 
