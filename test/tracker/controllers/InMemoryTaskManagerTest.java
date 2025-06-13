@@ -82,6 +82,7 @@ class InMemoryTaskManagerTest {
 
         subtask1.setStatus(Status.DONE);
         manager.updateSubtask(subtask1);
+        manager.updateEpicStatus(epic.getId());
         assertEquals(Status.IN_PROGRESS, manager.getEpic(epic.getId()).getStatus());
 
         subtask2.setStatus(Status.DONE);
@@ -152,6 +153,44 @@ class InMemoryTaskManagerTest {
         assertTrue(manager.getAllTasks().isEmpty(), "Не должна добавляться null задача");
         assertTrue(manager.getAllEpics().isEmpty(), "Не должен добавляться null эпик");
         assertTrue(manager.getAllSubtasks().isEmpty(), "Не должна добавляться null подзадача");
+    }
+
+
+    @Test
+    void shouldRemoveSubtaskIdFromEpicWhenSubtaskDeleted() {
+        Epic epic = new Epic("Epic", "");
+        manager.createEpic(epic);
+
+        Subtask subtask = new Subtask("Subtask", "", epic.getId());
+        manager.createSubtask(subtask);
+
+        // Проверяем, что эпик содержит подзадачу
+        assertTrue(epic.getSubtaskIds().contains(subtask.getId()));
+
+        manager.deleteSubtask(subtask.getId());
+
+        assertFalse(epic.getSubtaskIds().contains(subtask.getId()));
+    }
+
+    @Test
+    void shouldCleanAllSubtasksWhenEpicDeleted() {
+        Epic epic = new Epic("Epic", "");
+        manager.createEpic(epic);
+
+        Subtask subtask1 = new Subtask("Sub1", "", epic.getId());
+        Subtask subtask2 = new Subtask("Sub2", "", epic.getId());
+        manager.createSubtask(subtask1);
+        manager.createSubtask(subtask2);
+
+        assertEquals(2, manager.getAllSubtasks().size());
+
+        manager.deleteEpic(epic.getId());
+
+        assertTrue(manager.getAllSubtasks().isEmpty());
+        assertNull(manager.getSubtask(subtask1.getId()));
+        assertNull(manager.getSubtask(subtask2.getId()));
+
+        assertNull(manager.getEpic(epic.getId()));
     }
 
 }
