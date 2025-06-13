@@ -9,7 +9,9 @@ public class Task {
     protected String description;
     protected Status status;
 
-    public enum Status { NEW, IN_PROGRESS, DONE }
+    public enum Status {NEW, IN_PROGRESS, DONE}
+
+    public enum Type {TASK, EPIC, SUBTASK}
 
     public Task(String name, String description) {
         this.name = name;
@@ -47,6 +49,10 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Type getType() {
+        return Type.TASK;
     }
 
     @Override
