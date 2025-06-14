@@ -21,13 +21,22 @@ class EpicTest {
 
     @Test
     void shouldManageSubtaskIds() {
-        Epic epic = new Epic("Эпик", "");
+        Epic epic = new Epic("Эпик", "Описание эпика");
+        assertTrue(epic.getSubtaskIds().isEmpty(), "Новый эпик должен иметь пустой список подзадач");
 
-        epic.getSubtaskIds().add(1);
-        assertEquals(1, epic.getSubtaskIds().get(0));
+        epic.addSubtaskId(1);
+        assertEquals(1, epic.getSubtaskIds().size(), "Должна быть одна подзадача");
+        assertEquals(1, epic.getSubtaskIds().get(0), "Неверный ID подзадачи");
 
         epic.setSubtaskIds(List.of(10, 20));
-        assertEquals(2, epic.getSubtaskIds().size());
+        assertEquals(2, epic.getSubtaskIds().size(), "Должно быть две подзадачи");
+        assertTrue(epic.getSubtaskIds().containsAll(List.of(10, 20)), "Список должен содержать 10 и 20");
+
+        List<Integer> subtaskIds = epic.getSubtaskIds();
+        assertThrows(UnsupportedOperationException.class,
+                () -> subtaskIds.add(30),
+                "Нельзя модифицировать список подзадач напрямую"
+        );
     }
 
 }

@@ -17,16 +17,17 @@ public class Epic extends Task {
         this.endTime = null;
     }
 
-    public void setSubtaskIds(List<Integer> subtaskIds) {
-        this.subtaskIds = new ArrayList<>(subtaskIds);
-    }
-
     public List<Integer> getSubtaskIds() {
-        return new ArrayList<>(subtaskIds);
+        return List.copyOf(subtaskIds);
     }
 
     public void addSubtaskId(int subtaskId) {
         subtaskIds.add(subtaskId);
+    }
+
+    public void setSubtaskIds(List<Integer> subtaskIds) {
+        this.subtaskIds.clear();
+        this.subtaskIds.addAll(subtaskIds);
     }
 
     public void removeSubtaskId(int subtaskId) {
