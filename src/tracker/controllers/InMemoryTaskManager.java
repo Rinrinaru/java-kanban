@@ -112,9 +112,12 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtask != null) {
             prioritizedTasks.removeIf(task -> task.getId() == subtaskId);
             historyManager.remove(subtaskId);
-            epics.getOrDefault(subtask.getEpicId(), new Epic("", "")).getSubtaskIds().removeIf(id -> id == subtaskId);
-            updateEpicStatus(subtask.getEpicId());
-            updateEpicTimeFields(subtask.getEpicId());
+            Epic epic = epics.get(subtask.getEpicId());
+            if (epic != null) {
+                epic.removeSubtaskId(subtaskId);
+                updateEpicStatus(epic.getId());
+                updateEpicTimeFields(epic.getId());
+            }
         }
     }
 

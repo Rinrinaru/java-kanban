@@ -7,6 +7,7 @@ import tracker.model.Subtask;
 import tracker.model.Task;
 import tracker.model.Task.Status;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -165,11 +166,15 @@ class InMemoryTaskManagerTest {
         Subtask subtask = new Subtask("Subtask", "", epic.getId());
         manager.createSubtask(subtask);
 
-        assertTrue(epic.getSubtaskIds().contains(subtask.getId()));
+        List<Integer> subtaskIdsBefore = epic.getSubtaskIds();
+        assertTrue(subtaskIdsBefore.contains(subtask.getId()),
+                "Подзадача должна быть в списке подзадач эпика");
 
         manager.deleteSubtask(subtask.getId());
 
-        assertFalse(epic.getSubtaskIds().contains(subtask.getId()));
+        List<Integer> subtaskIdsAfter = epic.getSubtaskIds();
+        assertFalse(subtaskIdsAfter.contains(subtask.getId()),
+                "Подзадача должна удалиться из списка подзадач эпика");
     }
 
     @Test
@@ -216,18 +221,21 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldGetPrioritizedTasks() {
-        Task task1 = new Task("Task 1", "");
+        Task task1 = new Task("Задача 1", "");
         task1.setStartTime(LocalDateTime.now().plusHours(2));
+        task1.setDuration(Duration.ofMinutes(30));
 
-        Task task2 = new Task("Task 2", "");
+        Task task2 = new Task("Задача 2", "");
         task2.setStartTime(LocalDateTime.now().plusHours(1));
+        task2.setDuration(Duration.ofMinutes(30));
 
         manager.createTask(task1);
         manager.createTask(task2);
 
         List<Task> prioritized = manager.getPrioritizedTasks();
-        assertEquals(task2.getId(), prioritized.get(0).getId(), "Задачи не отсортированы по времени");
-        assertEquals(task1.getId(), prioritized.get(1).getId(), "Задачи не отсортированы по времени");
+        assertEquals(2, prioritized.size(), "Должно быть 2 задачи в списке приоритетов");
+        assertEquals(task2.getId(), prioritized.get(0).getId(), "Первой должна быть задача с более ранним временем начала");
+        assertEquals(task1.getId(), prioritized.get(1).getId(), "Второй должна быть задача с более поздним временем начала");
     }
 
 }
