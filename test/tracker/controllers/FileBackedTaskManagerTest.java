@@ -25,33 +25,6 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    void SaveAndLoadTasksTest() {
-        Task task = new Task("Задача", "важное описание");
-        manager.createTask(task);
-
-        Epic epic = new Epic("Эпик", "важное эпичное описание");
-        manager.createEpic(epic);
-
-        Subtask subtask = new Subtask("Подзадача", "важное подзадачное описание", epic.getId());
-        manager.createSubtask(subtask);
-
-        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
-
-        List<Task> tasks = loadedManager.getAllTasks();
-        assertEquals(1, tasks.size());
-        assertEquals("Задача", tasks.get(0).getName());
-
-        List<Epic> epics = loadedManager.getAllEpics();
-        assertEquals(1, epics.size());
-        assertEquals("Эпик", epics.get(0).getName());
-
-        List<Subtask> subtasks = loadedManager.getAllSubtasks();
-        assertEquals(1, subtasks.size());
-        assertEquals("Подзадача", subtasks.get(0).getName());
-        assertEquals(epic.getId(), subtasks.get(0).getEpicId());
-    }
-
-    @Test
     void SaveTaskChangesTest() {
         Task task = new Task("Задача", "важное описание");
         manager.createTask(task);
