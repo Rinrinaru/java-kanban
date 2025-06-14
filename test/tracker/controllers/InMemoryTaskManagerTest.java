@@ -7,6 +7,8 @@ import tracker.model.Subtask;
 import tracker.model.Task;
 import tracker.model.Task.Status;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -164,12 +166,15 @@ class InMemoryTaskManagerTest {
         Subtask subtask = new Subtask("Subtask", "", epic.getId());
         manager.createSubtask(subtask);
 
-        // Проверяем, что эпик содержит подзадачу
-        assertTrue(epic.getSubtaskIds().contains(subtask.getId()));
+        List<Integer> subtaskIdsBefore = epic.getSubtaskIds();
+        assertTrue(subtaskIdsBefore.contains(subtask.getId()),
+                "Подзадача должна быть в списке подзадач эпика");
 
         manager.deleteSubtask(subtask.getId());
 
-        assertFalse(epic.getSubtaskIds().contains(subtask.getId()));
+        List<Integer> subtaskIdsAfter = epic.getSubtaskIds();
+        assertFalse(subtaskIdsAfter.contains(subtask.getId()),
+                "Подзадача должна удалиться из списка подзадач эпика");
     }
 
     @Test
@@ -191,6 +196,46 @@ class InMemoryTaskManagerTest {
         assertNull(manager.getSubtask(subtask2.getId()));
 
         assertNull(manager.getEpic(epic.getId()));
+    }
+
+    @Test
+    void shouldCreateEpicWithoutSubtasks() {
+        Epic epic = new Epic("Epic", "Description");
+        manager.createEpic(epic);
+
+        assertEquals(0, manager.getSubtasksByEpic(epic.getId()).size(), "У эпика не должно быть подзадач");
+        assertEquals(Status.NEW, epic.getStatus(), "Статус пустого эпика должен быть NEW");
+    }
+
+    @Test
+    void shouldRemoveSubtaskFromEpicWhenDeleted() {
+        Epic epic = new Epic("Epic", "");
+        manager.createEpic(epic);
+
+        Subtask subtask = new Subtask("Subtask", "", epic.getId());
+        manager.createSubtask(subtask);
+        manager.deleteSubtask(subtask.getId());
+
+        assertFalse(manager.getSubtasksByEpic(epic.getId()).contains(subtask), "Подзадача должна удалиться из эпика");
+    }
+
+    @Test
+    void shouldGetPrioritizedTasks() {
+        Task task1 = new Task("Задача 1", "");
+        task1.setStartTime(LocalDateTime.now().plusHours(2));
+        task1.setDuration(Duration.ofMinutes(30));
+
+        Task task2 = new Task("Задача 2", "");
+        task2.setStartTime(LocalDateTime.now().plusHours(1));
+        task2.setDuration(Duration.ofMinutes(30));
+
+        manager.createTask(task1);
+        manager.createTask(task2);
+
+        List<Task> prioritized = manager.getPrioritizedTasks();
+        assertEquals(2, prioritized.size(), "Должно быть 2 задачи в списке приоритетов");
+        assertEquals(task2.getId(), prioritized.get(0).getId(), "Первой должна быть задача с более ранним временем начала");
+        assertEquals(task1.getId(), prioritized.get(1).getId(), "Второй должна быть задача с более поздним временем начала");
     }
 
 }
