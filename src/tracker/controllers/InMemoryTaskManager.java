@@ -16,7 +16,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Subtask> subtasks = new HashMap<>();
     protected int nextId = 1;
     private final HistoryManager historyManager;
-    private final Set<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder())));
+    protected final Set<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder())));
 
     public InMemoryTaskManager(HistoryManager historyManager) {
         this.historyManager = historyManager;
@@ -227,7 +227,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private void updateEpicTimeFields(int epicId) {
+    protected void updateEpicTimeFields(int epicId) {
         Epic epic = epics.get(epicId);
         if (epic != null) {
             List<Subtask> subtasksList = getSubtasksByEpic(epicId);
