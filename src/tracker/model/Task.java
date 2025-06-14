@@ -13,9 +13,9 @@ public class Task {
     protected Duration duration;
     protected LocalDateTime startTime;
 
-    public enum Status {NEW, IN_PROGRESS, DONE}
+    public enum Status { NEW, IN_PROGRESS, DONE }
 
-    public enum Type {TASK, EPIC, SUBTASK}
+    public enum Type { TASK, EPIC, SUBTASK }
 
     public Task(String name, String description) {
         this.name = name;
