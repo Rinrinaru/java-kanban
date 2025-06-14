@@ -50,4 +50,5 @@ public interface TaskManager {
     void updateSubtask(Subtask updatedSubtask);
 
     List<Task> getHistory();
+
 }

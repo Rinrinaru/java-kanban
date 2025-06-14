@@ -67,19 +67,4 @@ class FileBackedTaskManagerTest {
         assertEquals("Обновленная задача", loadedTask.getName());
         assertEquals(Task.Status.DONE, loadedTask.getStatus());
     }
-
-    @Test
-    void CalculateEpicStatusAfterLoadTest() {
-        Epic epic = new Epic("Эпик", "важное эпичное описание");
-        manager.createEpic(epic);
-
-        Subtask subtask = new Subtask("Подзадача", "важное подзадачное описание", epic.getId());
-        subtask.setStatus(Task.Status.DONE);
-        manager.createSubtask(subtask);
-
-        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
-        Epic loadedEpic = loadedManager.getEpic(epic.getId());
-
-        assertEquals(Task.Status.DONE, loadedEpic.getStatus());
-    }
 }

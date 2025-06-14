@@ -7,6 +7,7 @@ import tracker.model.Subtask;
 import tracker.model.Task;
 import tracker.model.Task.Status;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -164,7 +165,6 @@ class InMemoryTaskManagerTest {
         Subtask subtask = new Subtask("Subtask", "", epic.getId());
         manager.createSubtask(subtask);
 
-        // Проверяем, что эпик содержит подзадачу
         assertTrue(epic.getSubtaskIds().contains(subtask.getId()));
 
         manager.deleteSubtask(subtask.getId());
@@ -191,6 +191,43 @@ class InMemoryTaskManagerTest {
         assertNull(manager.getSubtask(subtask2.getId()));
 
         assertNull(manager.getEpic(epic.getId()));
+    }
+
+    @Test
+    void shouldCreateEpicWithoutSubtasks() {
+        Epic epic = new Epic("Epic", "Description");
+        manager.createEpic(epic);
+
+        assertEquals(0, manager.getSubtasksByEpic(epic.getId()).size(), "У эпика не должно быть подзадач");
+        assertEquals(Status.NEW, epic.getStatus(), "Статус пустого эпика должен быть NEW");
+    }
+
+    @Test
+    void shouldRemoveSubtaskFromEpicWhenDeleted() {
+        Epic epic = new Epic("Epic", "");
+        manager.createEpic(epic);
+
+        Subtask subtask = new Subtask("Subtask", "", epic.getId());
+        manager.createSubtask(subtask);
+        manager.deleteSubtask(subtask.getId());
+
+        assertFalse(manager.getSubtasksByEpic(epic.getId()).contains(subtask), "Подзадача должна удалиться из эпика");
+    }
+
+    @Test
+    void shouldGetPrioritizedTasks() {
+        Task task1 = new Task("Task 1", "");
+        task1.setStartTime(LocalDateTime.now().plusHours(2));
+
+        Task task2 = new Task("Task 2", "");
+        task2.setStartTime(LocalDateTime.now().plusHours(1));
+
+        manager.createTask(task1);
+        manager.createTask(task2);
+
+        List<Task> prioritized = manager.getPrioritizedTasks();
+        assertEquals(task2.getId(), prioritized.get(0).getId(), "Задачи не отсортированы по времени");
+        assertEquals(task1.getId(), prioritized.get(1).getId(), "Задачи не отсортированы по времени");
     }
 
 }
